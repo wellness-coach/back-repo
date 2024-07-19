@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPOSITORY=/home/ubuntu  #1
-PROJECT_NAME=WELLNESS-COACH
+REPOSITORY=/home/ubuntu/back-repo  #1
+PROJECT_NAME=wellness-coach
 
 cd $REPOSITORY/$PROJECT_NAME/  #2
 

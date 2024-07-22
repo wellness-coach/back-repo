@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ubuntu/back-repo  #1
+REPOSITORY=/home/ubuntu/wc/back-repo  #1
 PROJECT_NAME=wellness-coach
 
 cd $REPOSITORY/$PROJECT_NAME/  #2

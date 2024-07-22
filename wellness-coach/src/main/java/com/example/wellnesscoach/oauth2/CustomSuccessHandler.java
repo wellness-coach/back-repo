@@ -42,14 +42,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(createCookie("Authorization", token));
         //response.sendRedirect("http://localhost:3000/callback");
-        response.sendRedirect("http://localhost:8080/main");
+        response.sendRedirect("https://www.wellnesscoach.store/main");
     }
 
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60*60*60); //쿠키 살아있을 시간
-        //cookie.setSecure(true); //https에서만 허용
+        cookie.setSecure(true); //https에서만 허용
         cookie.setPath("/"); //쿠키는 전역에서 볼 수 있음
         cookie.setHttpOnly(true); //자바스크립트가 해당 쿠키를 가져가지 못함
 

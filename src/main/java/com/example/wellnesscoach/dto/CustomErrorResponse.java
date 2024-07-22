@@ -1,6 +1,6 @@
 package com.example.wellnesscoach.dto;
 
-import com.board.demo.exception.CustomErrorCode;
+import com.example.wellnesscoach.exception.CustomErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

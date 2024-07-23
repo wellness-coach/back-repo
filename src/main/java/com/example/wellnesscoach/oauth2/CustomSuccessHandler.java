@@ -43,6 +43,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(createCookie("Authorization", token));
         //response.sendRedirect("http://localhost:3000/callback");
         response.sendRedirect("https://www.wellnesscoach.store/main");
+        //response.sendRedirect("http://localhost:8080/main");
     }
 
     private Cookie createCookie(String key, String value) {

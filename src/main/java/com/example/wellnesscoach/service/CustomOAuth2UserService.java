@@ -1,7 +1,7 @@
 package com.example.wellnesscoach.service;
 
 import com.example.wellnesscoach.dto.*;
-import com.example.wellnesscoach.entity.UserEntity;
+import com.example.wellnesscoach.entity.User;
 import com.example.wellnesscoach.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -43,17 +43,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
 
-        UserEntity existData = userRepository.findByUsername(username);
+        User existData = userRepository.findByUsername(username);
 
         if (existData == null) { //한번도 로그인 X (유저 데이터가 존재하지 않음)
 
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
-            userEntity.setEmail(oAuth2Response.getEmail());
-            userEntity.setName(oAuth2Response.getName());
-            userEntity.setRole("ROLE_USER");
+            User user = new User();
+            user.setUsername(username);
+            user.setEmail(oAuth2Response.getEmail());
+            user.setName(oAuth2Response.getName());
+            user.setRole("ROLE_USER");
 
-            userRepository.save(userEntity);
+            userRepository.save(user);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);

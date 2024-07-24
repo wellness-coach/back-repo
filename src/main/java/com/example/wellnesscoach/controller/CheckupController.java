@@ -1,5 +1,5 @@
 package com.example.wellnesscoach.controller;
-
+/*
 import com.example.wellnesscoach.dto.ApiResponseDto;
 import com.example.wellnesscoach.entity.Checkup;
 import com.example.wellnesscoach.service.CheckupService;
@@ -18,10 +18,10 @@ public class CheckupController {
         this.checkupService = checkupService;
     }
 
-    /*
+
     @ResponseBody
     @PostMapping("/upload")
     public ApiResponseDto<Checkup> tempUploadMeal(@Requestbody) {
         return checkupService.save()
-    }*/
-}
+    }
+}*/

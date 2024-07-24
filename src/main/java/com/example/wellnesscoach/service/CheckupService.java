@@ -1,5 +1,5 @@
 package com.example.wellnesscoach.service;
-
+/*
 import com.example.wellnesscoach.entity.Checkup;
 import com.example.wellnesscoach.repository.CheckupRepository;
 import org.springframework.stereotype.Service;
@@ -20,4 +20,4 @@ public class CheckupService {
     public Checkup submit(Checkup checkup) {
 
     }
-}
+}*/

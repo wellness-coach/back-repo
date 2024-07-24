@@ -54,9 +54,6 @@ public class SecurityConfig {
                     }
                 }));
 
-        // HTTPS 강제 설정
-        http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
-
         // CSRF 비활성화
         http.csrf(csrf -> csrf.disable());
 

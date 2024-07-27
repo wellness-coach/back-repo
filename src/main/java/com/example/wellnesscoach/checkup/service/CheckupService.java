@@ -52,7 +52,30 @@ public class CheckupService {
         return checkupRepository.save(checkup);
     }
 
-    /*public Checkup submit(Checkup checkup) {
+    @Transactional
+    public Checkup submitCheckup(SaveCheckupCommand saveCheckupCommand) {
+        Checkup checkup;
 
-    }*/
+        User user = userRepository.findById(saveCheckupCommand.userId())
+                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        if (saveCheckupCommand.checkupId() != null) {
+            checkup = checkupRepository.findById(saveCheckupCommand.checkupId())
+                    .orElseThrow(() -> new NotFoundCheckupException("해당 진단지를 찾을 수 없습니다."));
+        } else {
+            checkup = new Checkup();
+        }
+
+        List<MenuItem> menuItems = saveCheckupCommand.menuItemCommands().stream()
+                .map(menuItemRequest -> new MenuItem(checkup, menuItemRequest.type(), menuItemRequest.name()))
+                .collect(Collectors.toList());
+
+        checkup.submit(
+                user,
+                saveCheckupCommand.date(),
+                menuItems,
+                saveCheckupCommand.memo()
+        );
+        return checkupRepository.save(checkup);
+    }
 }

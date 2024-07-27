@@ -66,4 +66,26 @@ public class Checkup {
         this.memo = memo;
         this.checkupStatus = CheckupStatus.IN_PROGRESS;
     }
+
+    public void submit(
+            User user,
+            final LocalDate date,
+            final List<MenuItem> menuItems,
+            final String memo
+    ) {
+        this.user = user;
+        this.date = date;
+        if (this.menuItems == null) {
+            this.menuItems = new ArrayList<>();  // 여기서 초기화
+        }
+        this.menuItems.clear();
+        if (menuItems != null) {
+            for (MenuItem menuItem : menuItems) {
+                menuItem.setCheckup(this);
+                this.menuItems.add(menuItem);
+            }
+        }
+        this.memo = memo;
+        this.checkupStatus = CheckupStatus.COMPLETED;
+    }
 }

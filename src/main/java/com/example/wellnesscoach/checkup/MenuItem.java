@@ -1,5 +1,6 @@
 package com.example.wellnesscoach.checkup;
 
+import com.example.wellnesscoach.meal.Meal;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,9 @@ public class MenuItem {
     private MenuType type;
 
     private String name;
+
+    @OneToOne(mappedBy = "menuItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Meal meal;
 
     public MenuItem(Checkup checkup, MenuType type, String name) {
         this.checkup = checkup;

@@ -1,18 +1,24 @@
 package com.example.wellnesscoach.meal;
 
-import com.example.wellnesscoach.checkup.MenuItem;
+import com.example.wellnesscoach.checkup.Checkup;
+import com.example.wellnesscoach.recommendation.Recommendation;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Meal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mealId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private MenuItem menuItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checkup_id")
+    private Checkup checkup;
+
+    @Enumerated(EnumType.STRING)
+    private MenuType menuType;
 
     private String menuName;
 
@@ -31,9 +37,12 @@ public class Meal {
 
     private String solution;
 
+    @OneToOne(mappedBy = "meal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Recommendation recommendation;
 
     public void updateMeal(
-            MenuItem menuItem,
+            Checkup checkup,
+            final MenuType menuType,
             final String menuName,
             final AgingType agingType,
             final Boolean sugar,
@@ -43,7 +52,8 @@ public class Meal {
             final Integer score,
             final String solution
     ) {
-        this.menuItem = menuItem;
+        this.checkup = checkup;
+        this.menuType = menuType;
         this.menuName = menuName;
         this.agingType = agingType;
         this.sugar = sugar;
@@ -53,4 +63,9 @@ public class Meal {
         this.score = score;
         this.solution = solution;
     }
+
+    public void setCheckup(Checkup checkup) {
+        this.checkup = checkup;
+    }
+    // Getters and setters
 }

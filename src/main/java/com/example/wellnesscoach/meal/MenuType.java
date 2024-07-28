@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.checkup;
+package com.example.wellnesscoach.meal;
 
 public enum MenuType {
     BREAKFAST,

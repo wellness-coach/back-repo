@@ -1,5 +1,7 @@
 package com.example.wellnesscoach.checkup.controller.request;
 
+import com.example.wellnesscoach.meal.controller.request.MealRequest;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -7,7 +9,7 @@ public record SaveCheckupRequest(
         Long checkupId,
         Long userId,
         LocalDate date,
-        List<MenuItemRequest> menuItems,
+        List<MealRequest> meals,
         String memo
 ) {
 
@@ -15,9 +17,9 @@ public record SaveCheckupRequest(
             final Long checkupId,
             final Long userId,
             final LocalDate date,
-            final List<MenuItemRequest> menuItems,
+            final List<MealRequest> meals,
             final String memo
     ) {
-        return new SaveCheckupRequest(checkupId, userId, date, menuItems, memo);
+        return new SaveCheckupRequest(checkupId, userId, date, meals, memo);
     }
 }

@@ -2,30 +2,29 @@ package com.example.wellnesscoach.checkup.service.response;
 
 import com.example.wellnesscoach.checkup.Checkup;
 import com.example.wellnesscoach.checkup.CheckupStatus;
-import com.example.wellnesscoach.checkup.controller.request.MenuItemRequest;
+import com.example.wellnesscoach.meal.service.response.MealResponse;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public record SaveCheckupResponse(
         Long checkupId,
         Long userId,
         LocalDate date,
-        List<MenuItemResponse> menuItemRequests,
+        List<MealResponse> mealResponses,
         String memo,
         CheckupStatus checkupStatus
 ) {
     public static SaveCheckupResponse of(Checkup checkup){
-        List<MenuItemResponse> menuItems = checkup.getMenuItems().stream()
-                .map(menuItem -> new MenuItemResponse(menuItem.getType(), menuItem.getName()))
+        List<MealResponse> meals = checkup.getMeals().stream()
+                .map(meal -> new MealResponse(meal.getMenuType(), meal.getMenuName()))
                 .toList();
 
         return new SaveCheckupResponse(
                 checkup.getCheckupId(),
                 checkup.getUser().getId(),
                 checkup.getDate(),
-                menuItems,
+                meals,
                 checkup.getMemo(),
                 checkup.getCheckupStatus()
         );

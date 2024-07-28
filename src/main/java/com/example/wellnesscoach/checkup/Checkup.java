@@ -1,6 +1,7 @@
 package com.example.wellnesscoach.checkup;
 
 import com.example.wellnesscoach.entity.User;
+import com.example.wellnesscoach.meal.Meal;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,9 +27,7 @@ public class Checkup {
     private LocalDate date;
 
     @OneToMany(mappedBy = "checkup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuItem> menuItems;
-
-    private Integer aging;
+    private List<Meal> meals;
 
     private String memo;
 
@@ -36,11 +35,10 @@ public class Checkup {
     private CheckupStatus checkupStatus;
 
     @Builder
-    public Checkup(User user, LocalDate date, List<MenuItem> menuItems, Integer aging, String memo, CheckupStatus checkupStatus) {
+    public Checkup(User user, LocalDate date, List<Meal> meals, String memo, CheckupStatus checkupStatus) {
         this.user = user;
         this.date = date;
-        this.menuItems = menuItems;
-        this.aging = aging;
+        this.meals = meals;
         this.memo = memo;
         this.checkupStatus = checkupStatus;
     }
@@ -48,20 +46,18 @@ public class Checkup {
     public void update(
             User user,
             final LocalDate date,
-            final List<MenuItem> menuItems,
+            final List<Meal> meals,
             final String memo
     ) {
         this.user = user;
         this.date = date;
-        if (this.menuItems == null) {
-            this.menuItems = new ArrayList<>();  // 여기서 초기화
+        if (this.meals == null) {
+            this.meals = new ArrayList<>();  // 여기서 초기화
         }
-        this.menuItems.clear();
-        if (menuItems != null) {
-            for (MenuItem menuItem : menuItems) {
-                menuItem.setCheckup(this);
-                this.menuItems.add(menuItem);
-            }
+        this.meals.clear();
+        for (Meal meal : meals) {
+            meal.setCheckup(this);
+            this.meals.add(meal);
         }
         this.memo = memo;
         this.checkupStatus = CheckupStatus.IN_PROGRESS;
@@ -70,22 +66,32 @@ public class Checkup {
     public void submit(
             User user,
             final LocalDate date,
-            final List<MenuItem> menuItems,
+            final List<Meal> meals,
             final String memo
     ) {
         this.user = user;
         this.date = date;
-        if (this.menuItems == null) {
-            this.menuItems = new ArrayList<>();  // 여기서 초기화
+        if (this.meals == null) {
+            this.meals = new ArrayList<>();  // 여기서 초기화
         }
-        this.menuItems.clear();
-        if (menuItems != null) {
-            for (MenuItem menuItem : menuItems) {
-                menuItem.setCheckup(this);
-                this.menuItems.add(menuItem);
+        this.meals.clear();
+        if (meals != null) {
+            for (Meal meal : meals) {
+                meal.setCheckup(this);
+                this.meals.add(meal);
             }
         }
         this.memo = memo;
         this.checkupStatus = CheckupStatus.COMPLETED;
     }
+
+    /*public int getMealNum(Checkup checkup, MenuType type) {
+        int num = 0;
+        for (MenuItem menuItem : checkup.getMenuItems()) {
+            if (menuItem.getType() == type)
+                num++;
+        };
+        return num;
+    }
+*/
 }

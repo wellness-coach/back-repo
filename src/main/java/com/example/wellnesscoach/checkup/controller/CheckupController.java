@@ -1,20 +1,18 @@
 package com.example.wellnesscoach.checkup.controller;
 
-import com.example.wellnesscoach.chatGPT.dto.ChatGPTResponseDTO;
 import com.example.wellnesscoach.checkup.Checkup;
-import com.example.wellnesscoach.checkup.MenuItem;
-import com.example.wellnesscoach.checkup.MenuType;
+import com.example.wellnesscoach.meal.MenuType;
 import com.example.wellnesscoach.checkup.controller.request.SaveCheckupRequest;
 import com.example.wellnesscoach.checkup.service.CheckupService;
-import com.example.wellnesscoach.checkup.service.request.MenuItemCommand;
 import com.example.wellnesscoach.checkup.service.request.SaveCheckupCommand;
 import com.example.wellnesscoach.checkup.service.response.SaveCheckupResponse;
+import com.example.wellnesscoach.meal.Meal;
 import com.example.wellnesscoach.meal.service.MealService;
+import com.example.wellnesscoach.meal.service.request.MealCommand;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,15 +32,15 @@ public class CheckupController {
     @PostMapping("/save")
     public ResponseEntity<SaveCheckupResponse> saveCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
 
-        List<MenuItemCommand> menuItemCommands = saveCheckupRequest.menuItems().stream()
-                .map(menuItemRequest -> MenuItemCommand.of(menuItemRequest.type(), menuItemRequest.name()))
+        List<MealCommand> mealCommands = saveCheckupRequest.meals().stream()
+                .map(mealRequest -> MealCommand.of(mealRequest.menuType(), mealRequest.menuName()))
                 .collect(Collectors.toList());
 
         SaveCheckupCommand saveCheckupCommand = SaveCheckupCommand.of(
                 saveCheckupRequest.checkupId(),
                 saveCheckupRequest.userId(),
                 saveCheckupRequest.date(),
-                menuItemCommands,
+                mealCommands,
                 saveCheckupRequest.memo()
         );
 
@@ -55,36 +53,31 @@ public class CheckupController {
     @PostMapping("/submit")
     public void submitCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
 
-        List<MenuItemCommand> menuItemCommands = saveCheckupRequest.menuItems().stream()
-                .map(menuItemRequest -> MenuItemCommand.of(menuItemRequest.type(), menuItemRequest.name()))
+        List<MealCommand> mealCommands = saveCheckupRequest.meals().stream()
+                .map(mealRequest -> MealCommand.of(mealRequest.menuType(), mealRequest.menuName()))
                 .collect(Collectors.toList());
 
         SaveCheckupCommand saveCheckupCommand = SaveCheckupCommand.of(
                 saveCheckupRequest.checkupId(),
                 saveCheckupRequest.userId(),
                 saveCheckupRequest.date(),
-                menuItemCommands,
+                mealCommands,
                 saveCheckupRequest.memo()
         );
 
         Checkup checkup = checkupService.submitCheckup(saveCheckupCommand);
 
-        // meal Service 분석 시작
-        List<String> menus = checkup.getMenuItems().stream()
-                .map(MenuItem::getName)
-                .collect(Collectors.toList());
-
-        for (MenuItem menuItem : checkup.getMenuItems()) {
-            if (menuItem.getType() == MenuType.DRINK) {
-                mealService.analyzingDrink(menuItem);
+        //식사 분석 및 점수 매기기
+        for (Meal meal : checkup.getMeals()) {
+            if (meal.getMenuType() == MenuType.DRINK) {
+                mealService.analyzingDrink(meal);
             }
             else {
-                mealService.analyzingMeal(menuItem);
+                mealService.analyzingMeal(meal);
             }
         }
 
-        /*for (String menu : menus) {
-            mealService.analyzingMeal(menu);
-        }*/
+        //checkupService.calculateScore(checkup);
+
     }
 }

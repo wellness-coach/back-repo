@@ -1,7 +1,6 @@
 package com.example.wellnesscoach.domain.user.service;
 
 import com.example.wellnesscoach.domain.user.User;
-import com.example.wellnesscoach.dto.*;
 import com.example.wellnesscoach.global.oauth2.dto.GoogleResponse;
 import com.example.wellnesscoach.global.oauth2.dto.NaverResponse;
 import com.example.wellnesscoach.global.oauth2.dto.OAuth2Response;

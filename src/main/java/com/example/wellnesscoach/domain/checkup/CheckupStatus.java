@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup;
+package com.example.wellnesscoach.domain.checkup;
 
 public enum CheckupStatus {
     NOT_STARTED,

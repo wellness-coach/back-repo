@@ -1,7 +1,7 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup.service.response;
+package com.example.wellnesscoach.domain.checkup.service.response;
 
-import com.example.wellnesscoach.domain.chatGPT.checkup.Checkup;
-import com.example.wellnesscoach.domain.chatGPT.checkup.CheckupStatus;
+import com.example.wellnesscoach.domain.checkup.Checkup;
+import com.example.wellnesscoach.domain.checkup.CheckupStatus;
 import com.example.wellnesscoach.domain.meal.service.response.MealResponse;
 
 import java.time.LocalDate;

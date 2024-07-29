@@ -1,9 +1,9 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup.service;
+package com.example.wellnesscoach.domain.checkup.service;
 
-import com.example.wellnesscoach.domain.chatGPT.checkup.Checkup;
-import com.example.wellnesscoach.domain.chatGPT.checkup.exception.NotFoundCheckupException;
-import com.example.wellnesscoach.domain.chatGPT.checkup.repository.CheckupRepository;
-import com.example.wellnesscoach.domain.chatGPT.checkup.service.request.SaveCheckupCommand;
+import com.example.wellnesscoach.domain.checkup.Checkup;
+import com.example.wellnesscoach.domain.checkup.exception.NotFoundCheckupException;
+import com.example.wellnesscoach.domain.checkup.repository.CheckupRepository;
+import com.example.wellnesscoach.domain.checkup.service.request.SaveCheckupCommand;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.meal.Meal;
 import com.example.wellnesscoach.domain.user.repository.UserRepository;

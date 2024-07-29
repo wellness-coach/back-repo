@@ -1,11 +1,11 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup.controller;
+package com.example.wellnesscoach.domain.checkup.controller;
 
-import com.example.wellnesscoach.domain.chatGPT.checkup.Checkup;
-import com.example.wellnesscoach.domain.chatGPT.checkup.service.request.SaveCheckupCommand;
-import com.example.wellnesscoach.domain.chatGPT.checkup.service.response.SaveCheckupResponse;
+import com.example.wellnesscoach.domain.checkup.Checkup;
+import com.example.wellnesscoach.domain.checkup.service.request.SaveCheckupCommand;
+import com.example.wellnesscoach.domain.checkup.service.response.SaveCheckupResponse;
 import com.example.wellnesscoach.domain.meal.MenuType;
-import com.example.wellnesscoach.domain.chatGPT.checkup.controller.request.SaveCheckupRequest;
-import com.example.wellnesscoach.domain.chatGPT.checkup.service.CheckupService;
+import com.example.wellnesscoach.domain.checkup.controller.request.SaveCheckupRequest;
+import com.example.wellnesscoach.domain.checkup.service.CheckupService;
 import com.example.wellnesscoach.domain.meal.Meal;
 import com.example.wellnesscoach.domain.meal.service.MealService;
 import com.example.wellnesscoach.domain.meal.service.request.MealCommand;

@@ -1,6 +1,6 @@
 package com.example.wellnesscoach.domain.meal;
 
-import com.example.wellnesscoach.domain.chatGPT.checkup.Checkup;
+import com.example.wellnesscoach.domain.checkup.Checkup;
 import com.example.wellnesscoach.domain.recommendation.Recommendation;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup;
+package com.example.wellnesscoach.domain.checkup;
 
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.meal.Meal;

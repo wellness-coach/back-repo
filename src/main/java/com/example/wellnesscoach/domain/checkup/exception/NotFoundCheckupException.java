@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup.exception;
+package com.example.wellnesscoach.domain.checkup.exception;
 
 public class NotFoundCheckupException extends CheckupException{
 

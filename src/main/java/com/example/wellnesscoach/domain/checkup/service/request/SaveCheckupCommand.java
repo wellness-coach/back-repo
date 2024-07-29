@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup.service.request;
+package com.example.wellnesscoach.domain.checkup.service.request;
 
 import com.example.wellnesscoach.domain.meal.service.request.MealCommand;
 

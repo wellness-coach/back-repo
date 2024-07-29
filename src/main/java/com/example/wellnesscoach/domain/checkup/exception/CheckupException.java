@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.domain.chatGPT.checkup.exception;
+package com.example.wellnesscoach.domain.checkup.exception;
 
 public abstract class CheckupException extends RuntimeException{
 

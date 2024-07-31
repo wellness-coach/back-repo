@@ -8,9 +8,10 @@ import com.example.wellnesscoach.domain.checkup.service.response.CustomCheckupRe
 import com.example.wellnesscoach.domain.meal.AgingType;
 import com.example.wellnesscoach.domain.meal.MenuType;
 import com.example.wellnesscoach.domain.meal.service.response.DrinkResultResponse;
-import com.example.wellnesscoach.domain.meal.service.response.MealResponse;
 import com.example.wellnesscoach.domain.meal.service.response.MealResultResponse;
 import com.example.wellnesscoach.domain.recommendation.Recommendation;
+import com.example.wellnesscoach.domain.recommendation.repository.ScrapRepoisitory;
+import com.example.wellnesscoach.domain.recommendation.service.ProductResponse;
 import com.example.wellnesscoach.domain.result.Result;
 import com.example.wellnesscoach.domain.result.repository.resultRepository;
 import com.example.wellnesscoach.domain.result.service.response.ScoreResponse;
@@ -20,6 +21,7 @@ import com.example.wellnesscoach.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,13 +30,15 @@ import java.util.stream.Collectors;
 public class CheckupService {
 
     private final com.example.wellnesscoach.domain.result.repository.resultRepository resultRepository;
+    private final ScrapRepoisitory scrapRepoisitory;
     private CheckupRepository checkupRepository;
     private UserRepository userRepository;
 
-    public CheckupService(CheckupRepository checkupRepository, UserRepository userRepository, resultRepository resultRepository) {
+    public CheckupService(CheckupRepository checkupRepository, UserRepository userRepository, resultRepository resultRepository, ScrapRepoisitory scrapRepoisitory) {
         this.checkupRepository = checkupRepository;
         this.userRepository = userRepository;
         this.resultRepository = resultRepository;
+        this.scrapRepoisitory = scrapRepoisitory;
     }
 
     @Transactional
@@ -150,17 +154,21 @@ public class CheckupService {
         setScore(meals, checkup);
 
         for (Meal meal : mealList) {
-            if (meal.getMenuType() != MenuType.DRINK) setMeal(meals, checkup, meal);
-            else setDrink(meals, checkup, meal);
+            if (meal.getMenuType() != MenuType.DRINK) setMeal(meals, checkup, meal, user);
+            else setDrink(meals, checkup, meal, user);
         }
 
         return CustomCheckupResponse
-                .from(user.getId(), date, checkup.getMemo(), recentAging, checkup.getTodayAgingType(), meals);
+                .from(user.getUserId(), date, checkup.getMemo(), recentAging, checkup.getTodayAgingType(), meals);
     }
 
-    public void setMeal(Map<String, List<Object>> meals, Checkup checkup, Meal meal){
+    public void setMeal(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user){
         String type = meal.getMenuType().name();
         Recommendation recommendation = meal.getRecommendation();
+        Boolean isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
+        ProductResponse productResponse = null;
+        if (meal.getAgingType() != AgingType.PROPER)
+            productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);
 
         MealResultResponse mealResult
                 = MealResultResponse.builder()
@@ -170,26 +178,29 @@ public class CheckupService {
                 .redmeat(meal.getRedmeat())
                 .carbohydrate(meal.getCarbohydrate())
                 .solution(meal.getSolution())
-                .targetProductName(meal.getAgingType()!= AgingType.PROPER ? recommendation.getTargetIngredient() : null)
-                .productName(meal.getAgingType()!= AgingType.PROPER ? recommendation.getProductName() : null)
-                .productLink(meal.getAgingType()!= AgingType.PROPER ? recommendation.getProductLink() : null)
+                .productResponse(productResponse)
                 .build();
 
         meals.get(type).add(mealResult);
     }
 
-    public void setDrink(Map<String, List<Object>> meals, Checkup checkup, Meal meal){
+    public void setDrink(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user){
         String type = meal.getMenuType().name();
         Recommendation recommendation = meal.getRecommendation();
+
+        Boolean isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
+        ProductResponse productResponse = null;
+        if (meal.getAgingType() != AgingType.PROPER) {
+            productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);
+        }
+
 
         DrinkResultResponse drinkResult
                 = DrinkResultResponse.builder()
                 .menuName(meal.getMenuName())
                 .sugar(meal.getSugar())
                 .solution(meal.getSolution())
-                .targetProductName(meal.getAgingType()== AgingType.PROPER ? recommendation.getTargetIngredient() : null)
-                .productName(meal.getAgingType()== AgingType.PROPER ? recommendation.getProductName() : null)
-                .productLink(meal.getAgingType()== AgingType.PROPER ? recommendation.getProductLink() : null)
+                .productResponse(productResponse)
                 .build();
 
         meals.get(type).add(drinkResult);
@@ -204,5 +215,31 @@ public class CheckupService {
                     .build();
             meals.get(result.getMenuType().name()).add(scoreResponse);
         }
+    }
+
+    public AgingType lastWeekAgingType(User user, LocalDate date) {
+        var oneWeekBefore = date.minusWeeks(1);
+        var startOfWeek = oneWeekBefore.with(DayOfWeek.MONDAY);
+        var endOfWeek = oneWeekBefore.with(DayOfWeek.SUNDAY);
+
+        List<Checkup> checkupList = checkupRepository.findCheckupsByUserAndDateRange(user, startOfWeek, endOfWeek);
+        List<AgingType> agingTypeList = checkupList.stream().map(Checkup::getTodayAgingType).toList();
+
+        AgingType lastWeekAgingType = null;
+
+        if (agingTypeList.isEmpty()) return lastWeekAgingType; //첫 유저인 경우 처리
+
+        int total = 0;
+        for (AgingType agingType : agingTypeList){
+            total += agingType.ordinal();
+        }
+        int size = agingTypeList.size();
+        float score = total/size;
+
+        if (score < 0.5) lastWeekAgingType = AgingType.PROPER;
+        else if (score < 1.5) lastWeekAgingType = AgingType.CAUTION;
+        else lastWeekAgingType = AgingType.DANGER;
+
+        return lastWeekAgingType;
     }
 }

@@ -22,7 +22,7 @@ public record SaveCheckupResponse(
 
         return new SaveCheckupResponse(
                 checkup.getCheckupId(),
-                checkup.getUser().getId(),
+                checkup.getUser().getUserId(),
                 checkup.getDate(),
                 meals,
                 checkup.getMemo(),

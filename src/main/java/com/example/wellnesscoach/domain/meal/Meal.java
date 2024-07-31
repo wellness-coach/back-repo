@@ -14,7 +14,7 @@ public class Meal {
     private Long mealId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checkup_id")
+    @JoinColumn(name = "checkupId")
     private Checkup checkup;
 
     @Enumerated(EnumType.STRING)

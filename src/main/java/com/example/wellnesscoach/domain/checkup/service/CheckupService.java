@@ -10,7 +10,6 @@ import com.example.wellnesscoach.domain.meal.MenuType;
 import com.example.wellnesscoach.domain.meal.service.response.DrinkResultResponse;
 import com.example.wellnesscoach.domain.meal.service.response.MealResultResponse;
 import com.example.wellnesscoach.domain.recommendation.Recommendation;
-import com.example.wellnesscoach.domain.recommendation.Scrap;
 import com.example.wellnesscoach.domain.recommendation.repository.ScrapRepoisitory;
 import com.example.wellnesscoach.domain.recommendation.service.ProductResponse;
 import com.example.wellnesscoach.domain.result.Result;
@@ -22,6 +21,7 @@ import com.example.wellnesscoach.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -159,7 +159,7 @@ public class CheckupService {
         }
 
         return CustomCheckupResponse
-                .from(user.getId(), date, checkup.getMemo(), recentAging, checkup.getTodayAgingType(), meals);
+                .from(user.getUserId(), date, checkup.getMemo(), recentAging, checkup.getTodayAgingType(), meals);
     }
 
     public void setMeal(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user){
@@ -215,5 +215,31 @@ public class CheckupService {
                     .build();
             meals.get(result.getMenuType().name()).add(scoreResponse);
         }
+    }
+
+    public AgingType lastWeekAgingType(User user, LocalDate date) {
+        var oneWeekBefore = date.minusWeeks(1);
+        var startOfWeek = oneWeekBefore.with(DayOfWeek.MONDAY);
+        var endOfWeek = oneWeekBefore.with(DayOfWeek.SUNDAY);
+
+        List<Checkup> checkupList = checkupRepository.findCheckupsByUserAndDateRange(user, startOfWeek, endOfWeek);
+        List<AgingType> agingTypeList = checkupList.stream().map(Checkup::getTodayAgingType).toList();
+
+        AgingType lastWeekAgingType = null;
+
+        if (agingTypeList.isEmpty()) return lastWeekAgingType; //첫 유저인 경우 처리
+
+        int total = 0;
+        for (AgingType agingType : agingTypeList){
+            total += agingType.ordinal();
+        }
+        int size = agingTypeList.size();
+        float score = total/size;
+
+        if (score < 0.5) lastWeekAgingType = AgingType.PROPER;
+        else if (score < 1.5) lastWeekAgingType = AgingType.CAUTION;
+        else lastWeekAgingType = AgingType.DANGER;
+
+        return lastWeekAgingType;
     }
 }

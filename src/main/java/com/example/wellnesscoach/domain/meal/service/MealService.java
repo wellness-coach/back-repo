@@ -163,6 +163,10 @@ public class MealService {
                 solution
         );
         mealRepository.save(meal);
+
+        if (!type.equals("적정")) {
+            recommendationService.analyzeAlternativeFood(meal);
+        }
     }
 
     public Integer calculateMeal(boolean sugar, boolean grain, boolean redmeat, boolean carbohydrate) {

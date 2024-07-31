@@ -2,7 +2,9 @@ package com.example.wellnesscoach.domain.recommendation;
 
 import com.example.wellnesscoach.domain.meal.Meal;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Recommendation {
 

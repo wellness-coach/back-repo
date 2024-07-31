@@ -1,7 +1,10 @@
 package com.example.wellnesscoach.domain.meal.service.response;
 
+import com.example.wellnesscoach.domain.recommendation.service.ProductResponse;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.Map;
 
 @Getter
 @Builder
@@ -12,7 +15,5 @@ public class MealResultResponse {
     private boolean redmeat;
     private boolean carbohydrate;
     private String solution;
-    private String targetProductName;
-    private String productName;
-    private String productLink;
+    ProductResponse productResponse;
 }

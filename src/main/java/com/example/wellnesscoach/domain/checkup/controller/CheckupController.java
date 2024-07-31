@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/checkup")
 public class CheckupController {
 
@@ -41,7 +41,7 @@ public class CheckupController {
         this.checkupRepository = checkupRepository;
     }
 
-    @ResponseBody
+
     @PostMapping("/save")
     public ResponseEntity<SaveCheckupResponse> saveCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
 
@@ -62,7 +62,7 @@ public class CheckupController {
         return ResponseEntity.ok().body(response);
     }
 
-    @ResponseBody
+
     @PostMapping("/submit")
     public void submitCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
 
@@ -93,7 +93,7 @@ public class CheckupController {
         resultService.calculateScore(checkup);
     }
 
-    @ResponseBody
+
     @GetMapping("/report")
     public CustomCheckupResponse reportCheckup(@RequestParam Long userId, @RequestParam LocalDate date) {
         User user = userRepository.findById(userId)

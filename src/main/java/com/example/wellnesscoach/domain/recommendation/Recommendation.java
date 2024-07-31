@@ -4,6 +4,8 @@ import com.example.wellnesscoach.domain.meal.Meal;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Entity
 public class Recommendation {
@@ -21,6 +23,9 @@ public class Recommendation {
     private String productName;
 
     private String productLink;
+
+    @OneToMany(mappedBy = "recommendation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Scrap> scraps;
 
     public void createRecommendation(
             Meal meal,

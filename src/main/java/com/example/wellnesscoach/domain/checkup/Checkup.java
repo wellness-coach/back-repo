@@ -1,5 +1,7 @@
 package com.example.wellnesscoach.domain.checkup;
 
+import com.example.wellnesscoach.domain.meal.AgingType;
+import com.example.wellnesscoach.domain.meal.MenuType;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.meal.Meal;
 import jakarta.persistence.*;
@@ -34,14 +36,8 @@ public class Checkup {
     @Enumerated(EnumType.STRING)
     private CheckupStatus checkupStatus;
 
-    @Builder
-    public Checkup(User user, LocalDate date, List<Meal> meals, String memo, CheckupStatus checkupStatus) {
-        this.user = user;
-        this.date = date;
-        this.meals = meals;
-        this.memo = memo;
-        this.checkupStatus = checkupStatus;
-    }
+    @Enumerated(EnumType.STRING)
+    private AgingType todayAgingType;
 
     public void update(
             User user,
@@ -85,13 +81,21 @@ public class Checkup {
         this.checkupStatus = CheckupStatus.COMPLETED;
     }
 
-    /*public int getMealNum(Checkup checkup, MenuType type) {
+    public int getMealNum(MenuType type) {
         int num = 0;
-        for (MenuItem menuItem : checkup.getMenuItems()) {
-            if (menuItem.getType() == type)
+        for (Meal meal : this.getMeals()) {
+            if (meal.getMenuType() == type)
                 num++;
         };
         return num;
     }
-*/
+
+    public void setScore(int totalScore) {
+        AgingType todayAgingType;
+        if (totalScore < 4) todayAgingType = AgingType.DANGER;
+        else if (totalScore < 7) todayAgingType = AgingType.CAUTION;
+        else todayAgingType = AgingType.PROPER;
+
+        this.todayAgingType = todayAgingType;
+    }
 }

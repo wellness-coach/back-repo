@@ -37,8 +37,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
+        Long userId = customUserDetails.getUserId();
 
-        String token = jwtUtil.createJwt(username, role, 60*60*60L);
+        String token = jwtUtil.createJwt(username, role, userId, 60*60*60L);
 
         response.addCookie(createCookie("Authorization", token));
         //System.out.println("Authentication Success: Redirecting to /main with JWT Token");

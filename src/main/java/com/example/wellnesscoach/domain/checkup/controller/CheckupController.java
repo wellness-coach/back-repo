@@ -64,7 +64,7 @@ public class CheckupController {
 
 
     @PostMapping("/submit")
-    public void submitCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
+    public String submitCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
 
         List<MealCommand> mealCommands = saveCheckupRequest.meals().stream()
                 .map(mealRequest -> MealCommand.of(mealRequest.menuType(), mealRequest.menuName()))
@@ -91,6 +91,7 @@ public class CheckupController {
         }
 
         resultService.calculateScore(checkup);
+        return "success";
     }
 
 

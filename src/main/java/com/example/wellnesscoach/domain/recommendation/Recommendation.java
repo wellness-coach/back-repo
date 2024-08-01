@@ -36,11 +36,13 @@ public class Recommendation {
             Meal meal,
             final String targetIngredient,
             final String productName,
-            final String productLink
+            final String productLink,
+            User user
     ) {
         this.meal = meal;
         this.targetIngredient = targetIngredient;
         this.productName = productName;
         this.productLink = productLink;
+        this.user = user;
     }
 }

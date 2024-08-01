@@ -57,7 +57,7 @@ public class RecommendationService {
         String productLink = createRecommend(alternativeIngredient);
 
         Recommendation recommendation = new Recommendation();
-        recommendation.createRecommendation(meal, targetIngredient, alternativeIngredient, productLink);
+        recommendation.createRecommendation(meal, targetIngredient, alternativeIngredient, productLink, meal.getCheckup().getUser());
 
         recommendationRepository.save(recommendation);
     }

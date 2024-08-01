@@ -139,7 +139,7 @@ public class CheckupService {
             meals.put(menuType.name(), new ArrayList<>());
         }
 
-        Checkup checkup = checkupRepository.findByDate(date);
+        Checkup checkup = checkupRepository.findByUserAndDate(user, date);
         List<Checkup> checkupList = checkupRepository.findAllCheckupsByUser(user);
         AgingType recentAging;
         if (checkupList.size() == 1) recentAging = null;
@@ -165,7 +165,10 @@ public class CheckupService {
     public void setMeal(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user){
         String type = meal.getMenuType().name();
         Recommendation recommendation = meal.getRecommendation();
-        Boolean isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
+        Boolean isScraped = false;
+        if (recommendation != null && recommendation.getScraps() != null) {
+            isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
+        }
         ProductResponse productResponse = null;
         if (meal.getAgingType() != AgingType.PROPER)
             productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);

@@ -26,6 +26,14 @@ public class MealService {
         this.recommendationService = recommendationService;
     }
 
+    public ChatGPTResponseDTO judgingMeal(Meal meal) {
+        String meal1 = String.format("%%s는 가속노화 3단계인 가속/유의/저속 중 뭐에 속하는지 JSON 형식으로만 존댓말로 답변해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: { \"노화유형\" : 가속/유의/저속 }", meal.getMenuName());
+        QuestionRequestDTO request1 = new QuestionRequestDTO(meal1);
+        ChatGPTResponseDTO judgeResponse = chatGPTService.askQuestion(request1);
+
+        return judgeResponse;
+    }
+
     public void analyzingMeal(Meal meal) {
         String meal1 = String.format("%s에 단순당, 정제곡물, 적색육, 탄수화물이 들어갔는지 JSON 형식으로만 존댓말로 답변해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: { \"단순당\": true/false, \"정제곡물\": true/false, \"적색육\": true/false, \"탄수화물\": true/false }", meal.getMenuName());
         QuestionRequestDTO request1 = new QuestionRequestDTO(meal1);
@@ -64,33 +72,44 @@ public class MealService {
         }
     }
 
-    public void addMeal(Meal meal, ChatGPTResponseDTO response1) throws IOException {
-        String analyzing = response1.getChoices().get(0).getMessage().getContent();
-        analyzing = analyzing.replaceAll("```json", "").replaceAll("```", "").trim();
+    public void addMeal(Meal meal, ChatGPTResponseDTO analyzingResponse) throws IOException {
 
+        //단순당 / 정제곡물 / 단순당 / 탄수화물 분석
+        String analyzingString = analyzingResponse.getChoices().get(0).getMessage().getContent();
+        analyzingString = analyzingString.replaceAll("```json", "").replaceAll("```", "").trim();
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode1 = objectMapper.readTree(analyzing);
+        JsonNode analyzingNode = objectMapper.readTree(analyzingString);
+        boolean sugar = analyzingNode.get("단순당").asBoolean();
+        boolean grain = analyzingNode.get("정제곡물").asBoolean();
+        boolean redmeat = analyzingNode.get("적색육").asBoolean();
+        boolean carbohydrate = analyzingNode.get("탄수화물").asBoolean();
 
-        boolean sugar = jsonNode1.get("단순당").asBoolean();
-        boolean grain = jsonNode1.get("정제곡물").asBoolean();
-        boolean redmeat = jsonNode1.get("적색육").asBoolean();
-        boolean carbohydrate = jsonNode1.get("탄수화물").asBoolean();
 
-        Integer score = calculateMeal(sugar, grain, redmeat, carbohydrate);
+        //노화 유형 답변
+        judgingMeal(meal);
+        ChatGPTResponseDTO judgeResponse = judgingMeal(meal);
+        String judgeString = judgeResponse.getChoices().get(0).getMessage().getContent();
+        judgeString = judgeString.replaceAll("```json", "").replaceAll("```", "").trim();
+        JsonNode judgeNode = objectMapper.readTree(judgeString);
+        String judge = judgeNode.get("노화유형").asText();
+        System.out.println(judge);
+        Integer score;
+        if (judge.equals("가속")) score = 4;
+        else if (judge.equals("유의")) score = 7;
+        else score = 10;
 
+        score = calculateMeal(score, sugar, grain, redmeat, carbohydrate);
         String type;
         if (0 <= score && score < 4) type = "가속";
         else if (4 <= score && score < 7) type = "유의";
         else type = "저속";
 
-        ChatGPTResponseDTO response2 = solutionMeal(meal.getMenuName(), type);
-
-        String gptSolution = response2.getChoices().get(0).getMessage().getContent();
-        gptSolution = gptSolution.replaceAll("```json", "").replaceAll("```", "").trim();
-
-        JsonNode jsonNode2 = objectMapper.readTree(gptSolution);
-
-        String solution = jsonNode2.get("솔루션").asText();
+        //솔루션 답변
+        ChatGPTResponseDTO solutionResponse = solutionMeal(meal.getMenuName(), type);
+        String solutionString = solutionResponse.getChoices().get(0).getMessage().getContent();
+        solutionString = solutionString.replaceAll("```json", "").replaceAll("```", "").trim();
+        JsonNode solutionNode = objectMapper.readTree(solutionString);
+        String solution = solutionNode.get("솔루션").asText();
 
         meal.updateMeal(
                 meal.getCheckup(),
@@ -169,12 +188,11 @@ public class MealService {
         }
     }
 
-    public Integer calculateMeal(boolean sugar, boolean grain, boolean redmeat, boolean carbohydrate) {
-        int score = 10;
-        if (sugar) score -= 3;
-        if (grain) score -= 3;
-        if (redmeat) score -=  2;
-        if (carbohydrate) score -= 2;
+    public Integer calculateMeal(Integer score, boolean sugar, boolean grain, boolean redmeat, boolean carbohydrate) {
+        if (sugar) score --;
+        if (grain) score --;
+        if (redmeat) score --;
+        if (carbohydrate) score --;
 
         return score;
     }

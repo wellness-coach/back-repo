@@ -52,7 +52,7 @@ public class MealService {
 
     public void analyzingDrink(Meal meal) {
         String menu = meal.getMenuName();
-        String drink = String.format("%s에 첨가된 당을 통해 단계: 적정, 주의, 위험 중 하나를 골라주고, 솔루션: 주의 또는 위험일 경우 3줄 이내 가속노화 관련 솔루션을 제공하고, 적정일 경우 저속노화 관련 조언을 해줘. 다른 말은 하지 말고, JSON 형식으로 다음과 같은 형식으로 존댓말로 답변해줘: { \"단계\": \"적정\"/\"주의\"/\"위험\", \"솔루션\": \"가속노화 솔루션 (주의 또는 위험일 경우), 해당 음식에 대한 저속노화 조언 (적정일 경우)\" }", menu);
+        String drink = String.format("%s에 첨가된 당을 통해 단계: 적정, 주의, 위험 중 하나를 골라주시고, 솔루션: 주의 또는 위험일 경우 가속노화 관련 솔루션을 3줄 이내로, 적정일 경우 해당 음식에 대한 저속노화 조언을 3줄 이내로 제공해 주세요. 다양한 예시를 포함해 주세요. 다른 말은 하지 말고, JSON 형식으로 다음과 같은 형식으로 존댓말로 답변해 주세요: { \"단계\": \"적정\"/\"주의\"/\"위험\", \"솔루션\": \"가속노화 솔루션 (주의 또는 위험일 경우), 해당 음식에 대한 저속노화 조언 (적정일 경우)\" }", menu);
 
         QuestionRequestDTO request = new QuestionRequestDTO(drink);
         ChatGPTResponseDTO response = chatGPTService.askQuestion(request);

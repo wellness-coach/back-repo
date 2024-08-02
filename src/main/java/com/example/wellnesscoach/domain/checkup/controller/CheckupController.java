@@ -15,12 +15,18 @@ import com.example.wellnesscoach.domain.result.service.ResultService;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @RestController
@@ -80,13 +86,41 @@ public class CheckupController {
 
         Checkup checkup = checkupService.submitCheckup(saveCheckupCommand);
 
+        int num_meals = checkup.getMeals().size();
+
         //식사 분석 및 점수 매기기
-        for (Meal meal : checkup.getMeals()) {
+        ExecutorService executorService = Executors.newFixedThreadPool(num_meals);
+        List<Future<?>> futures = new ArrayList<>();
+
+        /*for (Meal meal : checkup.getMeals()) {
             if (meal.getMenuType() == MenuType.DRINK) {
                 mealService.analyzingDrink(meal);
             }
             else {
                 mealService.analyzingMeal(meal);
+            }
+        }*/
+
+        for (Meal meal : checkup.getMeals()) {
+            futures.add(executorService.submit(() -> {
+                if (meal.getMenuType() == MenuType.DRINK) {
+                    mealService.analyzingDrink(meal);
+                }
+                else {
+                    mealService.analyzingMeal(meal);
+                }
+            }));
+        }
+
+        executorService.shutdown();
+
+        // 모든 작업이 완료될 때까지 기다림
+        for (Future<?> future : futures) {
+            try {
+                future.get(); // 작업이 완료될 때까지 기다림
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                // 예외 처리 필요시 여기서 수행
             }
         }
 

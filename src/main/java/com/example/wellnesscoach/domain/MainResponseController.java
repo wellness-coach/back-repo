@@ -59,7 +59,6 @@ public class MainResponseController {
             productResponses.add(productResponse);
         }
 
-        MainResponse mainResponse = MainResponse.of(lastWeekAgingType, checkupStatus, productResponses);
-        return mainResponse;
+        return MainResponse.of(user.getName(), lastWeekAgingType, checkupStatus, productResponses);
     }
 }

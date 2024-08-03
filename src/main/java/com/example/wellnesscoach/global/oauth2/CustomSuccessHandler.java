@@ -47,7 +47,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         //System.out.println("Authentication Success: Redirecting to /main with JWT Token");
         //response.sendRedirect("http://localhost:3000/callback");
         //response.sendRedirect("https://www.wellnesscoach.store/main");
-        response.sendRedirect("http://localhost:5173/main:" + userId);
+        response.sendRedirect("http://localhost:5173/main/" + userId);
     }
 
     private Cookie createCookie(String key, String value) {

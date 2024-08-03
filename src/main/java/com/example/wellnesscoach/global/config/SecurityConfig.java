@@ -1,6 +1,6 @@
 package com.example.wellnesscoach.global.config;
 
-import com.example.wellnesscoach.global.jwt.JWTFilter;
+//import com.example.wellnesscoach.global.jwt.JWTFilter;
 import com.example.wellnesscoach.global.jwt.JWTUtil;
 import com.example.wellnesscoach.global.oauth2.CustomSuccessHandler;
 import com.example.wellnesscoach.domain.user.service.CustomOAuth2UserService;
@@ -43,8 +43,8 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000", "http://localhost:8080", "http://localhost:3000",
-                                "https://www.wellnesscoach.store", "http://localhost:5173"));
+                        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000", "http://localhost:8080",
+                                "http://localhost:3000", "https://www.wellnesscoach.store", "http://localhost:5173"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -70,8 +70,8 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable());
 
         //JWTFilter 추가
-        http
-                .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        //http
+          //      .addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http
@@ -81,10 +81,8 @@ public class SecurityConfig {
                         .successHandler(customSuccessHandler)));
 
         //경로별 인가 작업
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/logout").permitAll()
-                        .anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll());
 
         //세션 설정 : STATELESS
         http

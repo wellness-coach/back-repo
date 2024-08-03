@@ -1,4 +1,4 @@
-package com.example.wellnesscoach.global.jwt;
+/*package com.example.wellnesscoach.global.jwt;
 
 import com.example.wellnesscoach.domain.user.dto.CustomOAuth2User;
 import com.example.wellnesscoach.domain.user.dto.UserDTO;
@@ -91,4 +91,4 @@ public class JWTFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-}
+}*/

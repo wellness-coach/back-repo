@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,16 +53,13 @@ public class CheckupController {
 
     @PostMapping("/save")
     public ResponseEntity<SaveCheckupResponse> saveCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
-
-        List<MealCommand> mealCommands = saveCheckupRequest.meals().stream()
-                .map(mealRequest -> MealCommand.of(mealRequest.menuType(), mealRequest.menuName()))
-                .collect(Collectors.toList());
-
         SaveCheckupCommand saveCheckupCommand = SaveCheckupCommand.of(
-                saveCheckupRequest.checkupId(),
+                null,
                 saveCheckupRequest.userId(),
                 saveCheckupRequest.date(),
-                mealCommands,
+                saveCheckupRequest.meals().stream()
+                        .map(mealRequest -> MealCommand.of(mealRequest.menuType(), mealRequest.menuName()))
+                        .collect(Collectors.toList()),
                 saveCheckupRequest.memo()
         );
 

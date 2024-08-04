@@ -43,23 +43,21 @@ public class CheckupService {
 
     @Transactional
     public Checkup saveCheckup(SaveCheckupCommand saveCheckupCommand) {
-        Checkup checkup;
-
         User user = userRepository.findById(saveCheckupCommand.userId())
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
-        if (saveCheckupCommand.checkupId() != null) {
-            checkup = checkupRepository.findById(saveCheckupCommand.checkupId())
-                    .orElseThrow(() -> new NotFoundCheckupException("해당 진단지를 찾을 수 없습니다."));
-        } else {
+        Checkup checkup = checkupRepository.findByUserAndDate(user, saveCheckupCommand.date());
+
+        if (checkup == null) {
             checkup = new Checkup();
         }
 
+        Checkup finalCheckup = checkup;
         List<Meal> meals = saveCheckupCommand.mealCommands().stream()
                 .map(mealRequest ->  {
                     Meal meal = new Meal();
                     meal.updateMeal(
-                            checkup,
+                            finalCheckup,
                             mealRequest.menuType(),
                             mealRequest.menuName(),
                             null,

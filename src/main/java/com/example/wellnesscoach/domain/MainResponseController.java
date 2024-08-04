@@ -10,6 +10,8 @@ import com.example.wellnesscoach.domain.recommendation.repository.Recommendation
 import com.example.wellnesscoach.domain.recommendation.service.ProductResponse;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.user.repository.UserRepository;
+import com.example.wellnesscoach.global.CustomException;
+import com.example.wellnesscoach.global.ErrorCode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +36,7 @@ public class MainResponseController {
 
     @GetMapping("/mainPage")
     public MainResponse mainResponse(@RequestParam LocalDate date, @RequestParam Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         AgingType lastWeekAgingType = checkupService.lastWeekAgingType(user, date);
         CheckupStatus checkupStatus;

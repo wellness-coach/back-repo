@@ -14,6 +14,8 @@ import com.example.wellnesscoach.domain.meal.service.request.MealCommand;
 import com.example.wellnesscoach.domain.result.service.ResultService;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.user.repository.UserRepository;
+import com.example.wellnesscoach.global.CustomException;
+import com.example.wellnesscoach.global.ErrorCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
@@ -132,7 +134,12 @@ public class CheckupController {
     @GetMapping("/report")
     public CustomCheckupResponse reportCheckup(@RequestParam Long userId, @RequestParam LocalDate date) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Checkup checkup = checkupRepository.findByUserAndDate(user, date);
+        if (checkup == null) {
+            throw new CustomException(ErrorCode.CHECKUP_NOT_FOUND);
+        }
 
         return checkupService.getReport(user, date);
     }

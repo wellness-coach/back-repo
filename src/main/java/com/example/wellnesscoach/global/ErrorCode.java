@@ -23,7 +23,9 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "유저 정보를 찾을 수 없습니다."),
 
-    CHECKUP_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "리포트 정보를 찾을 수 없습니다.");
+    CHECKUP_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "리포트 정보를 찾을 수 없습니다."),
+
+    CHECKUP_ALREADY_EXISTS(HttpStatus.CONFLICT, "C003", "해당 날짜에 이미 진단지가 존재합니다.");
 
     private final HttpStatus status;
     private final String code;

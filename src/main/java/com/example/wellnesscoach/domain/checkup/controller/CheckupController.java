@@ -71,6 +71,10 @@ public class CheckupController {
 
     @PostMapping("/submit")
     public String submitCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
+        User user = userRepository.findByUserId(saveCheckupRequest.userId());
+        if (checkupRepository.findByUserAndDate(user, saveCheckupRequest.date()) != null){
+            throw new CustomException(ErrorCode.CHECKUP_ALREADY_EXISTS);
+        }
 
         List<MealCommand> mealCommands = saveCheckupRequest.meals().stream()
                 .map(mealRequest -> MealCommand.of(mealRequest.menuType(), mealRequest.menuName()))
@@ -91,15 +95,6 @@ public class CheckupController {
         //식사 분석 및 점수 매기기
         ExecutorService executorService = Executors.newFixedThreadPool(num_meals);
         List<Future<?>> futures = new ArrayList<>();
-
-        /*for (Meal meal : checkup.getMeals()) {
-            if (meal.getMenuType() == MenuType.DRINK) {
-                mealService.analyzingDrink(meal);
-            }
-            else {
-                mealService.analyzingMeal(meal);
-            }
-        }*/
 
         for (Meal meal : checkup.getMeals()) {
             futures.add(executorService.submit(() -> {

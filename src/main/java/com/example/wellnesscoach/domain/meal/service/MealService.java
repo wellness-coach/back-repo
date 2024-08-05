@@ -60,8 +60,18 @@ public class MealService {
 
     public void analyzingDrink(Meal meal) {
         String menu = meal.getMenuName();
-        String drink = String.format("%s에 첨가된 당을 통해 단계: 적정, 주의, 위험 중 하나를 골라주시고, 솔루션: 주의 또는 위험일 경우 가속노화 관련 솔루션을 3줄 이내로, 적정일 경우 해당 음식에 대한 저속노화 조언을 3줄 이내로 제공해 주세요. 다양한 예시를 포함해 주세요. 다른 말은 하지 말고, JSON 형식으로 다음과 같은 형식으로 존댓말로 답변해 주세요: { \"단계\": \"적정\"/\"주의\"/\"위험\", \"솔루션\": \"가속노화 솔루션 (주의 또는 위험일 경우), 해당 음식에 대한 저속노화 조언 (적정일 경우)\" }", menu);
-
+        String drink = String.format(
+                "JSON 형식으로 내가 정해준 형식에 맞춰서 대답해줘. %s에 첨가된 당의 양을 퍼센트로 정확히 알려주고, " +
+                        "그 당 첨가율을 기반으로 적정, 주의, 위험 중 하나의 단계를 골라줘. " +
+                        "솔루션은 각 단계에 맞춰 3줄 이내로 제공해줘. " +
+                        "주의 또는 위험일 경우 가속노화를 방지하기 위한 구체적인 솔루션을 제공해주고, " +
+                        "적정일 경우 해당 음식에 대한 저속노화 조언을 제공해줘. " +
+                        "가속노화 솔루션의 경우에는 음료 이름을 처음에 언급하면서 시작해줘. " +
+                        "예를 들어, '사과 주스는 당 첨가율이 높습니다.'처럼 시작해줘. " +
+                        "대체 음료로는 특정한 무가당 음료를 추천해줘. " +
+                        "다른 말은 하지 말고, 꼭 JSON 형식으로 아래와 같이 대답해줘: " +
+                        "{ \"당 첨가율\": \"첨가율(퍼센트)\", \"단계\": \"적정\"/\"주의\"/\"위험\", \"솔루션\": \"가속노화 솔루션 (주의 또는 위험일 경우), " +
+                        "해당 음식에 대한 저속노화 조언 (적정일 경우)\" }", menu);
         QuestionRequestDTO request = new QuestionRequestDTO(drink);
         ChatGPTResponseDTO response = chatGPTService.askQuestion(request);
 
@@ -143,6 +153,8 @@ public class MealService {
         String content = response.getChoices().get(0).getMessage().getContent();
         content = content.replaceAll("```json", "").replaceAll("```", "").trim();
 
+        System.out.println(content);
+
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(content);
 
@@ -151,6 +163,7 @@ public class MealService {
 
         Integer score = 10;
         AgingType agingType = null;
+        Boolean sugar = false;
 
         switch (type) {
             case "적정":
@@ -160,10 +173,12 @@ public class MealService {
             case "주의":
                 agingType = AgingType.CAUTION;
                 score = 6;
+                sugar = true;
                 break;
             case "위험":
                 agingType = AgingType.DANGER;
                 score = 2;
+                sugar = true;
                 break;
             default:
                 throw new IllegalArgumentException("알 수 없는 단계 유형입니다: " + type);
@@ -174,7 +189,7 @@ public class MealService {
                 meal.getMenuType(),
                 meal.getMenuName(),
                 agingType,
-                false,
+                sugar,
                 false,
                 false,
                 false,

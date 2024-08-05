@@ -6,10 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Entity
+@Table(name = "Scrap")
 public class Scrap {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scrapId;
 
     @ManyToOne(fetch = FetchType.LAZY)

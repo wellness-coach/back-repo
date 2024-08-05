@@ -40,7 +40,7 @@ public class RecommendationService {
 
     public void analyzeAlternativeFood(Meal meal) throws IOException {
         String solution = String.format(
-                "%s는 가속노화를 촉진시키는음식이야. 이 음식 재료들을 분석해보고 주재료 중에서 가속노화를 촉진시키는걸 찾아서 같은 카테고리의 다른 재료로 대체해주고 그 이유를 적어줘.. 대체 재료는 노화에 좋은 재료로 선택해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: {\"대체재료\": \"대체할 재료 이름\", \"대체대상재료\": \"대체될 재료 이름\", \"이유\": \"추천 이유\"}",
+                "%s는 가속노화를 촉진시키는 음식입니다. 이 음식의 모든 재료를 영양성분, 건강효과, 그리고 가속노화와의 관련성에 따라 상세히 분석해 주세요. 가속노화를 촉진시키는 주요 재료를 찾아내고, 해당 재료와 용도 및 맛이 비슷하면서 저속노화에 도움이 되는 재료로 대체해 주세요. 대체 이유도 함께 설명해 주세요. 다음과 같은 형식으로 대답해 주세요: {\"대체재료\": \"대체할 재료 이름\", \"대체대상재료\": \"대체될 재료 이름\", \"이유\": \"추천 이유\"}.",
                 meal.getMenuName()
         );
         QuestionRequestDTO request = new QuestionRequestDTO(solution);

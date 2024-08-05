@@ -82,25 +82,25 @@ public class CheckupService {
     }
 
     @Transactional
+    public void deleteCheckup(Checkup checkup) {
+        checkupRepository.delete(checkup);
+    }
+
+    @Transactional
     public Checkup submitCheckup(SaveCheckupCommand saveCheckupCommand) {
         Checkup checkup;
 
         User user = userRepository.findById(saveCheckupCommand.userId())
                 .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
-        if (saveCheckupCommand.checkupId() != null) {
-            checkup = checkupRepository.findById(saveCheckupCommand.checkupId())
-                    .orElseThrow(() -> new NotFoundCheckupException("해당 진단지를 찾을 수 없습니다."));
-        } else {
-            checkup = new Checkup();
-            checkup.submit(
-                    user,
-                    saveCheckupCommand.date(),
-                    new ArrayList<>(), // 먼저 비어있는 리스트로 초기화
-                    saveCheckupCommand.memo()
-            );
-            checkup = checkupRepository.save(checkup); //
-        }
+        checkup = new Checkup();
+        checkup.submit(
+                user,
+                saveCheckupCommand.date(),
+                new ArrayList<>(), // 먼저 비어있는 리스트로 초기화
+                saveCheckupCommand.memo()
+        );
+        checkup = checkupRepository.save(checkup);
 
         final Checkup finalCheckup = checkup;
 

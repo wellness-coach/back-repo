@@ -72,8 +72,10 @@ public class CheckupController {
     @PostMapping("/submit")
     public String submitCheckup(@RequestBody SaveCheckupRequest saveCheckupRequest) {
         User user = userRepository.findByUserId(saveCheckupRequest.userId());
-        if (checkupRepository.findByUserAndDate(user, saveCheckupRequest.date()) != null){
-            throw new CustomException(ErrorCode.CHECKUP_ALREADY_EXISTS);
+        Checkup existingCheckup = checkupRepository.findByUserAndDate(user,saveCheckupRequest.date());
+
+        if (existingCheckup != null){
+            checkupService.deleteCheckup(existingCheckup);
         }
 
         List<MealCommand> mealCommands = saveCheckupRequest.meals().stream()

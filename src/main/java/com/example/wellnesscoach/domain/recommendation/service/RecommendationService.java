@@ -40,26 +40,37 @@ public class RecommendationService {
 
     public void analyzeAlternativeFood(Meal meal) throws IOException {
         String solution = String.format(
-                "%s는 가속노화를 촉진시키는 음식입니다. 이 음식의 모든 재료를 영양성분, 건강효과, 그리고 가속노화와의 관련성에 따라 상세히 분석해 주세요. 가속노화를 촉진시키는 주요 재료를 찾아내고, 해당 재료와 용도 및 맛이 비슷하면서 저속노화에 도움이 되는 재료로 대체해 주세요. 대체 이유도 함께 설명해 주세요. 다음과 같은 형식으로 대답해 주세요: {\"대체재료\": \"대체할 재료 이름\", \"대체대상재료\": \"대체될 재료 이름\", \"이유\": \"추천 이유\"}.",
+                "%s는 가속노화를 촉진시키는음식이야. 이 음식 재료들을 분석해보고 주재료 중에서 가속노화를 촉진시키는걸 찾아서 같은 카테고리의 다른 재료로 대체해주고 그 이유를 적어줘.. 대체 재료는 노화에 좋은 재료로 선택해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: {\"대체재료\": \"대체할 재료 이름\", \"대체대상재료\": \"대체될 재료 이름\", \"이유\": \"추천 이유\"}",
                 meal.getMenuName()
         );
         QuestionRequestDTO request = new QuestionRequestDTO(solution);
         ChatGPTResponseDTO response = chatGPTService.askQuestion(request);
         String answer = response.getChoices().get(0).getMessage().getContent();
+
+        // 응답 확인을 위한 로그 출력
+        System.out.println("ChatGPT 응답: " + answer);
+
+        // JSON 형식 검증 및 파싱
         answer = answer.replaceAll("```json", "").replaceAll("```", "").trim();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(answer);
+        // 예외 처리를 추가하여 문제가 되는 데이터를 식별합니다.
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(answer);
 
-        String alternativeIngredient = jsonNode.get("대체재료").asText();
-        String targetIngredient = jsonNode.get("대체대상재료").asText();
+            String alternativeIngredient = jsonNode.get("대체재료").asText();
+            String targetIngredient = jsonNode.get("대체대상재료").asText();
 
-        String productLink = createRecommend(alternativeIngredient);
+            String productLink = createRecommend(alternativeIngredient);
 
-        Recommendation recommendation = new Recommendation();
-        recommendation.createRecommendation(meal, targetIngredient, alternativeIngredient, productLink, meal.getCheckup().getUser());
+            Recommendation recommendation = new Recommendation();
+            recommendation.createRecommendation(meal, targetIngredient, alternativeIngredient, productLink, meal.getCheckup().getUser());
 
-        recommendationRepository.save(recommendation);
+            recommendationRepository.save(recommendation);
+        } catch (Exception e) {
+            System.err.println("JSON 파싱 오류: " + e.getMessage());
+            throw new IOException("ChatGPT 응답을 파싱하는 도중 오류가 발생했습니다.", e);
+        }
     }
 
     private String createRecommend(String productName) throws IOException{

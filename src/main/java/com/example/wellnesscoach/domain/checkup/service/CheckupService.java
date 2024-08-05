@@ -160,30 +160,21 @@ public class CheckupService {
                 .from(user.getUserId(), date, checkup.getMemo(), recentAging, checkup.getTodayAgingType(), meals);
     }
 
-    public void setMeal(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user) {
+    public void setMeal(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user){
         String type = meal.getMenuType().name();
         Recommendation recommendation = meal.getRecommendation();
         Boolean isScraped = false;
-        ProductResponse productResponse = null;
-
         if (recommendation != null) {
             if (recommendation.getScraps() != null) {
-                isScraped = recommendation.getScraps().stream()
-                        .anyMatch(scrap -> scrap.getUser().equals(user));
-            }
-
-            if (meal.getAgingType() != AgingType.PROPER) {
-                productResponse = ProductResponse.of(
-                        recommendation.getRecommendId(),
-                        recommendation.getTargetIngredient(),
-                        recommendation.getProductName(),
-                        recommendation.getProductLink(),
-                        isScraped
-                );
+            isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
             }
         }
+        ProductResponse productResponse = null;
+        if (meal.getAgingType() != AgingType.PROPER)
+            productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);
 
-        MealResultResponse mealResult = MealResultResponse.builder()
+        MealResultResponse mealResult
+                = MealResultResponse.builder()
                 .menuName(meal.getMenuName())
                 .sugar(meal.getSugar())
                 .grain(meal.getGrain())
@@ -200,23 +191,15 @@ public class CheckupService {
         String type = meal.getMenuType().name();
         Recommendation recommendation = meal.getRecommendation();
         Boolean isScraped = false;
-        ProductResponse productResponse = null;
-
         if (recommendation != null) {
             if (recommendation.getScraps() != null) {
-                isScraped = recommendation.getScraps().stream()
-                        .anyMatch(scrap -> scrap.getUser().equals(user));
+                isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
             }
+        }
 
-            if (meal.getAgingType() != AgingType.PROPER) {
-                productResponse = ProductResponse.of(
-                        recommendation.getRecommendId(),
-                        recommendation.getTargetIngredient(),
-                        recommendation.getProductName(),
-                        recommendation.getProductLink(),
-                        isScraped
-                );
-            }
+        ProductResponse productResponse = null;
+        if (meal.getAgingType() != AgingType.PROPER) {
+            productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);
         }
 
 

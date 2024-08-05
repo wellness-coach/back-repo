@@ -131,7 +131,7 @@ public class CheckupController {
 
         Checkup checkup = checkupRepository.findByUserAndDate(user, date);
         if (checkup == null) {
-            throw new CustomException(ErrorCode.CHECKUP_NOT_FOUND);
+            return null;
         }
 
         return checkupService.getReport(user, date);

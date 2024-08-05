@@ -23,9 +23,13 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "C001", "유저 정보를 찾을 수 없습니다."),
 
-    CHECKUP_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "리포트 정보를 찾을 수 없습니다."),
+    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "스크랩 되지 않은 제품입니다."),
 
-    CHECKUP_ALREADY_EXISTS(HttpStatus.CONFLICT, "C003", "해당 날짜에 이미 진단지가 존재합니다.");
+    CHECKUP_NOT_FOUND(HttpStatus.NOT_FOUND, "C003", "리포트 정보를 찾을 수 없습니다."),
+
+    CHECKUP_ALREADY_EXISTS(HttpStatus.CONFLICT, "C004", "해당 날짜에 이미 진단지가 존재합니다."),
+
+    ALREADY_SCRAPED(HttpStatus.CONFLICT, "C005", "유저가 이미 스크랩한 추천 제품입니다.");
 
     private final HttpStatus status;
     private final String code;

@@ -4,6 +4,7 @@ import com.example.wellnesscoach.domain.meal.AgingType;
 import com.example.wellnesscoach.domain.meal.MenuType;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.meal.Meal;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class Checkup {
     private LocalDate date;
 
     @OneToMany(mappedBy = "checkup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Meal> meals;
 
     private String memo;

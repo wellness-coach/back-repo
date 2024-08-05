@@ -2,6 +2,7 @@ package com.example.wellnesscoach.domain.meal;
 
 import com.example.wellnesscoach.domain.checkup.Checkup;
 import com.example.wellnesscoach.domain.recommendation.Recommendation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -15,6 +16,7 @@ public class Meal {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checkupId")
+    @JsonBackReference
     private Checkup checkup;
 
     @Enumerated(EnumType.STRING)

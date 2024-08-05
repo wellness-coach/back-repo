@@ -1,10 +1,12 @@
 package com.example.wellnesscoach.domain.checkup.service;
 
 import com.example.wellnesscoach.domain.checkup.Checkup;
+import com.example.wellnesscoach.domain.checkup.CheckupStatus;
 import com.example.wellnesscoach.domain.checkup.exception.NotFoundCheckupException;
 import com.example.wellnesscoach.domain.checkup.repository.CheckupRepository;
 import com.example.wellnesscoach.domain.checkup.service.request.SaveCheckupCommand;
 import com.example.wellnesscoach.domain.checkup.service.response.CustomCheckupResponse;
+import com.example.wellnesscoach.domain.checkup.service.response.SaveCheckupResponse;
 import com.example.wellnesscoach.domain.meal.AgingType;
 import com.example.wellnesscoach.domain.meal.MenuType;
 import com.example.wellnesscoach.domain.meal.service.response.DrinkResultResponse;
@@ -18,6 +20,8 @@ import com.example.wellnesscoach.domain.result.service.response.ScoreResponse;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.meal.Meal;
 import com.example.wellnesscoach.domain.user.repository.UserRepository;
+import com.example.wellnesscoach.global.CustomException;
+import com.example.wellnesscoach.global.ErrorCode;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -138,6 +142,11 @@ public class CheckupService {
         }
 
         Checkup checkup = checkupRepository.findByUserAndDate(user, date);
+
+        if (checkup.getCheckupStatus() == CheckupStatus.IN_PROGRESS) {
+            return null;
+        }
+
         List<Checkup> checkupList = checkupRepository.findAllCheckupsByUser(user);
         AgingType recentAging;
         if (checkupList.size() == 1) recentAging = null;
@@ -249,5 +258,13 @@ public class CheckupService {
         else lastWeekAgingType = AgingType.DANGER;
 
         return lastWeekAgingType;
+    }
+
+    public SaveCheckupResponse getCheckup(User user, LocalDate date) {
+        Checkup checkup = checkupRepository.findByUserAndDate(user, date);
+        if (checkup == null) {
+            throw new CustomException(ErrorCode.CHECKUP_NOT_FOUND);
+        }
+        return SaveCheckupResponse.of(checkup);
     }
 }

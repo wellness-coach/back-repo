@@ -13,7 +13,7 @@ public class MealResultResponse {
     private boolean sugar;
     private boolean grain;
     private boolean redmeat;
-    private boolean carbohydrate;
+    private boolean salt;
     private String solution;
     ProductResponse productResponse;
 }

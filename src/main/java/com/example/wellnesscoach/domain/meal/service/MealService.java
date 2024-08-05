@@ -27,7 +27,7 @@ public class MealService {
     }
 
     public ChatGPTResponseDTO judgingMeal(Meal meal) {
-        String meal1 = String.format("%%s는 가속노화 3단계인 가속/유의/저속 중 뭐에 속하는지 JSON 형식으로만 존댓말로 답변해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: { \"노화유형\" : 가속/유의/저속 }", meal.getMenuName());
+        String meal1 = String.format("%s는 가속노화 3단계인 가속/유의/저속 중 뭐에 속하는지 JSON 형식으로만 존댓말로 답변해줘. 가속노화에 속하는 기준은 건강에 나쁘냐 / 안나쁘냐 이걸로 판단해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: { \"노화유형\" : 가속/유의/저속 }", meal.getMenuName());
         QuestionRequestDTO request1 = new QuestionRequestDTO(meal1);
         ChatGPTResponseDTO judgeResponse = chatGPTService.askQuestion(request1);
 
@@ -35,7 +35,7 @@ public class MealService {
     }
 
     public void analyzingMeal(Meal meal) {
-        String meal1 = String.format("%s에 단순당, 정제곡물, 적색육, 탄수화물이 들어갔는지 JSON 형식으로만 존댓말로 답변해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: { \"단순당\": true/false, \"정제곡물\": true/false, \"적색육\": true/false, \"탄수화물\": true/false }", meal.getMenuName());
+        String meal1 = String.format("%s에 단순당, 정제곡물, 적색육, 나트륨이 들어갔는지 JSON 형식으로만 존댓말로 답변해줘. 다른 말은 하지 말고, 다음과 같은 형식으로 대답해줘: { \"단순당\": true/false, \"정제곡물\": true/false, \"적색육\": true/false, \"나트륨\": true/false }", meal.getMenuName());
         QuestionRequestDTO request1 = new QuestionRequestDTO(meal1);
         ChatGPTResponseDTO response1 = chatGPTService.askQuestion(request1);
 
@@ -82,7 +82,7 @@ public class MealService {
         boolean sugar = analyzingNode.get("단순당").asBoolean();
         boolean grain = analyzingNode.get("정제곡물").asBoolean();
         boolean redmeat = analyzingNode.get("적색육").asBoolean();
-        boolean carbohydrate = analyzingNode.get("탄수화물").asBoolean();
+        boolean salt = analyzingNode.get("나트륨").asBoolean();
 
 
         //노화 유형 답변
@@ -98,7 +98,7 @@ public class MealService {
         else if (judge.equals("유의")) score = 7;
         else score = 10;
 
-        score = calculateMeal(score, sugar, grain, redmeat, carbohydrate);
+        score = calculateMeal(score, sugar, grain, redmeat, salt);
         String type;
         if (0 <= score && score < 4) type = "가속";
         else if (4 <= score && score < 7) type = "유의";
@@ -119,7 +119,7 @@ public class MealService {
                 sugar,
                 grain,
                 redmeat,
-                carbohydrate,
+                salt,
                 score,
                 solution
         );
@@ -188,11 +188,11 @@ public class MealService {
         }
     }
 
-    public Integer calculateMeal(Integer score, boolean sugar, boolean grain, boolean redmeat, boolean carbohydrate) {
+    public Integer calculateMeal(Integer score, boolean sugar, boolean grain, boolean redmeat, boolean salt) {
         if (sugar) score --;
         if (grain) score --;
         if (redmeat) score --;
-        if (carbohydrate) score --;
+        if (salt) score --;
 
         return score;
     }

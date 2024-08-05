@@ -31,7 +31,7 @@ public class Meal {
 
     private Boolean redmeat;
 
-    private Boolean carbohydrate;
+    private Boolean salt;
 
     private Integer score;
 
@@ -48,7 +48,7 @@ public class Meal {
             final Boolean sugar,
             final Boolean grain,
             final Boolean redmeat,
-            final Boolean carbohydrate,
+            final Boolean salt,
             final Integer score,
             final String solution
     ) {
@@ -59,7 +59,7 @@ public class Meal {
         this.sugar = sugar;
         this.grain = grain;
         this.redmeat = redmeat;
-        this.carbohydrate = carbohydrate;
+        this.salt = salt;
         this.score = score;
         this.solution = solution;
     }

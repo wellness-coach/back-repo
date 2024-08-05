@@ -179,7 +179,7 @@ public class CheckupService {
                 .sugar(meal.getSugar())
                 .grain(meal.getGrain())
                 .redmeat(meal.getRedmeat())
-                .carbohydrate(meal.getCarbohydrate())
+                .salt(meal.getSalt())
                 .solution(meal.getSolution())
                 .productResponse(productResponse)
                 .build();

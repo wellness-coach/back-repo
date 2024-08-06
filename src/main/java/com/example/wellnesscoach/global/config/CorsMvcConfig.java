@@ -12,7 +12,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
         corsRegistry.addMapping("/**")
                 .exposedHeaders("Set-Cookie")
                 .allowedOrigins("https://localhost:3000", "http://localhost:8080", "http://localhost:3000",
-                        "https://www.wellnesscoach.store", "http://localhost:5173")
+                        "https://www.wellnesscoach.store", "http://localhost:5173", "https://wellness-coach.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowCredentials(true)
                 .maxAge(3600);

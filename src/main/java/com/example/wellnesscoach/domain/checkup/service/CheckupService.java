@@ -238,11 +238,17 @@ public class CheckupService {
         var oneWeekBefore = date.minusWeeks(1);
         var startOfWeek = oneWeekBefore.with(DayOfWeek.MONDAY);
         var endOfWeek = oneWeekBefore.with(DayOfWeek.SUNDAY);
+        AgingType lastWeekAgingType = null;
 
         List<Checkup> checkupList = checkupRepository.findCheckupsByUserAndDateRange(user, startOfWeek, endOfWeek);
-        List<AgingType> agingTypeList = checkupList.stream().map(Checkup::getTodayAgingType).toList();
 
-        AgingType lastWeekAgingType = null;
+        checkupList = checkupList.stream()
+                .filter(checkup -> checkup.getCheckupStatus() != CheckupStatus.IN_PROGRESS)
+                .collect(Collectors.toList());
+
+        if (checkupList.isEmpty()) return lastWeekAgingType;
+
+        List<AgingType> agingTypeList = checkupList.stream().map(Checkup::getTodayAgingType).toList();
 
         if (agingTypeList.isEmpty()) return lastWeekAgingType; //첫 유저인 경우 처리
 

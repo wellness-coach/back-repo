@@ -58,7 +58,8 @@ public class MainResponseController {
                     recommendation.getProductName(),
                     recommendation.getProductLink(),
                     isScraped);
-            productResponses.add(productResponse);
+            if (isScraped) productResponses.add(productResponse);
+            //productResponses.add(productResponse);
         }
 
         return MainResponse.of(user.getName(), lastWeekAgingType, checkupStatus, productResponses);

@@ -10,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class ChatGPTConfig {
 
-    @Value("${openai.secret-key}")
     public String API_KEY;
 
     // Config

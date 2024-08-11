@@ -13,10 +13,8 @@ import java.util.Map;
 @RestController
 public class TestApiController {
 
-    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String clientId;
 
-    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String clientSecret;
 
     private final ApiExamSearchBlog apiExamSearchBlog;

@@ -21,6 +21,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         System.out.println("UserId: " + userId);
 
-        response.sendRedirect("https://wellness-coach.vercel.app/main/" + userId);
+        //response.sendRedirect("https://wellness-coach.vercel.app/main/" + userId);
+        //response.sendRedirect("http://localhost:5173/main/" + userId);
     }
 }

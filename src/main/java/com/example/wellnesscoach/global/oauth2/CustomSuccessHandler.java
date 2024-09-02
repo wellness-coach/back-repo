@@ -20,8 +20,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Long userId = customUserDetails.getUserId();
 
         System.out.println("UserId: " + userId);
-
+        response.sendRedirect("https://www.wellnesscoach.store/main/" + userId);
         //response.sendRedirect("https://wellness-coach.vercel.app/main/" + userId);
-        response.sendRedirect("http://localhost:8080/main/" + userId);
+        //response.sendRedirect("http://localhost:8080/main/" + userId);
     }
 }

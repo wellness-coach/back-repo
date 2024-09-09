@@ -17,7 +17,7 @@ public class Scrap {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "recommendId")
     private Recommendation recommendation;
 

@@ -13,7 +13,7 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resultId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "checkupId")
     private Checkup checkup;
 

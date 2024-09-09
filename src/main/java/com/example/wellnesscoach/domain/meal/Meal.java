@@ -14,7 +14,7 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mealId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "checkupId")
     @JsonBackReference
     private Checkup checkup;

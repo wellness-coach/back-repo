@@ -139,6 +139,21 @@ public class CheckupController {
         return checkupService.getReport(user, date);
     }
 
+    @DeleteMapping("/delete/report")
+    public ResponseEntity<?> reportDelete(@RequestParam Long userId, @RequestParam LocalDate date) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Checkup checkup = checkupRepository.findByUserAndDate(user, date);
+        if (checkup == null) {
+            return null;
+        }
+
+        checkupRepository.delete(checkup);
+
+        return ResponseEntity.ok().body("delete success");
+    }
+
     @GetMapping("/get")
     public ResponseEntity<SaveCheckupResponse> getCheckup(@RequestParam Long userId, @RequestParam LocalDate date) {
         User user = userRepository.findById(userId)

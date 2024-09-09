@@ -2,6 +2,7 @@ package com.example.wellnesscoach.domain.checkup;
 
 import com.example.wellnesscoach.domain.meal.AgingType;
 import com.example.wellnesscoach.domain.meal.MenuType;
+import com.example.wellnesscoach.domain.result.Result;
 import com.example.wellnesscoach.domain.user.User;
 import com.example.wellnesscoach.domain.meal.Meal;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -29,7 +30,7 @@ public class Checkup {
 
     private LocalDate date;
 
-    @OneToMany(mappedBy = "checkup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "checkup", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonManagedReference
     private List<Meal> meals;
 
@@ -40,6 +41,9 @@ public class Checkup {
 
     @Enumerated(EnumType.STRING)
     private AgingType todayAgingType;
+
+    @OneToMany(mappedBy = "checkup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Result> results;
 
     public void update(
             User user,

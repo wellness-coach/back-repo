@@ -15,7 +15,7 @@ public class Recommendation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recommendId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "mealId")
     private Meal meal;
 

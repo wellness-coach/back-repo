@@ -173,27 +173,48 @@ public class CheckupService {
         String type = meal.getMenuType().name();
         Recommendation recommendation = meal.getRecommendation();
         Boolean isScraped = false;
+
         if (recommendation != null) {
             if (recommendation.getScraps() != null) {
-            isScraped = recommendation.getScraps().stream().anyMatch(scrap -> scrap.getUser().equals(user));
+                isScraped = recommendation.getScraps().stream()
+                        .anyMatch(scrap -> scrap.getUser().equals(user));
             }
+
+            ProductResponse productResponse = null;
+            if (meal.getAgingType() != AgingType.PROPER) {
+                productResponse = ProductResponse.of(
+                        recommendation.getRecommendId(),
+                        recommendation.getTargetIngredient(),
+                        recommendation.getProductName(),
+                        recommendation.getProductLink(),
+                        isScraped
+                );
+            }
+
+            MealResultResponse mealResult = MealResultResponse.builder()
+                    .menuName(meal.getMenuName())
+                    .sugar(meal.getSugar())
+                    .grain(meal.getGrain())
+                    .redmeat(meal.getRedmeat())
+                    .salt(meal.getSalt())
+                    .solution(meal.getSolution())
+                    .productResponse(productResponse)
+                    .build();
+
+            meals.get(type).add(mealResult);
+        } else {
+            MealResultResponse mealResult = MealResultResponse.builder()
+                    .menuName(meal.getMenuName())
+                    .sugar(meal.getSugar())
+                    .grain(meal.getGrain())
+                    .redmeat(meal.getRedmeat())
+                    .salt(meal.getSalt())
+                    .solution(meal.getSolution())
+                    .productResponse(null)
+                    .build();
+
+            meals.get(type).add(mealResult);
         }
-        ProductResponse productResponse = null;
-        if (meal.getAgingType() != AgingType.PROPER)
-            productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);
-
-        MealResultResponse mealResult
-                = MealResultResponse.builder()
-                .menuName(meal.getMenuName())
-                .sugar(meal.getSugar())
-                .grain(meal.getGrain())
-                .redmeat(meal.getRedmeat())
-                .salt(meal.getSalt())
-                .solution(meal.getSolution())
-                .productResponse(productResponse)
-                .build();
-
-        meals.get(type).add(mealResult);
     }
 
     public void setDrink(Map<String, List<Object>> meals, Checkup checkup, Meal meal, User user){
@@ -207,10 +228,18 @@ public class CheckupService {
         }
 
         ProductResponse productResponse = null;
-        if (meal.getAgingType() != AgingType.PROPER) {
-            productResponse = ProductResponse.of(recommendation.getRecommendId(), recommendation.getTargetIngredient(), recommendation.getProductName(), recommendation.getProductLink(), isScraped);
+        if (recommendation != null) {
+            // recommendation이 null이 아닐 때만 ID를 가져옴
+            if (meal.getAgingType() != AgingType.PROPER) {
+                productResponse = ProductResponse.of(
+                        recommendation.getRecommendId(),
+                        recommendation.getTargetIngredient(),
+                        recommendation.getProductName(),
+                        recommendation.getProductLink(),
+                        isScraped
+                );
+            }
         }
-
 
         DrinkResultResponse drinkResult
                 = DrinkResultResponse.builder()

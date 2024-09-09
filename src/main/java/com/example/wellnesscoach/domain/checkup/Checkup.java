@@ -30,7 +30,7 @@ public class Checkup {
 
     private LocalDate date;
 
-    @OneToMany(mappedBy = "checkup", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "checkup", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Meal> meals;
 

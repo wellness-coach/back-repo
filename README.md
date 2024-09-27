@@ -1,4 +1,4 @@
-# Wellness Coach
+# Wellness Coach_BE
 <img width="811" alt="스크린샷 2024-09-27 오후 3 48 18" src="https://github.com/user-attachments/assets/63696940-0687-4f45-9218-d275d1bc6541">
 
 **생성형 AI 기반 저속노화 식단 관리 서비스, Wellness Coach 백엔드 레포지토리입니다.**

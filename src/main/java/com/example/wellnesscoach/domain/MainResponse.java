@@ -1,9 +1,7 @@
 package com.example.wellnesscoach.domain;
 
-import com.example.wellnesscoach.domain.checkup.CheckupStatus;
-import com.example.wellnesscoach.domain.meal.AgingType;
-import com.example.wellnesscoach.domain.recommendation.service.ProductResponse;
-import com.example.wellnesscoach.domain.user.User;
+import com.example.wellnesscoach.domain.enums.AgingType;
+import com.example.wellnesscoach.service.response.ProductResponse;
 
 import java.util.List;
 

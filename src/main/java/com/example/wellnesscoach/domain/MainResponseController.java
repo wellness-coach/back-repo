@@ -1,15 +1,11 @@
 package com.example.wellnesscoach.domain;
 
-import com.example.wellnesscoach.domain.checkup.Checkup;
-import com.example.wellnesscoach.domain.checkup.CheckupStatus;
-import com.example.wellnesscoach.domain.checkup.repository.CheckupRepository;
-import com.example.wellnesscoach.domain.checkup.service.CheckupService;
-import com.example.wellnesscoach.domain.meal.AgingType;
-import com.example.wellnesscoach.domain.recommendation.Recommendation;
-import com.example.wellnesscoach.domain.recommendation.repository.RecommendationRepository;
-import com.example.wellnesscoach.domain.recommendation.service.ProductResponse;
-import com.example.wellnesscoach.domain.user.User;
-import com.example.wellnesscoach.domain.user.repository.UserRepository;
+import com.example.wellnesscoach.repository.CheckupRepository;
+import com.example.wellnesscoach.service.CheckupService;
+import com.example.wellnesscoach.domain.enums.AgingType;
+import com.example.wellnesscoach.repository.RecommendationRepository;
+import com.example.wellnesscoach.service.response.ProductResponse;
+import com.example.wellnesscoach.repository.UserRepository;
 import com.example.wellnesscoach.global.CustomException;
 import com.example.wellnesscoach.global.ErrorCode;
 import org.springframework.web.bind.annotation.GetMapping;

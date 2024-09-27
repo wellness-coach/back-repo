@@ -1,6 +1,6 @@
 package com.example.wellnesscoach.global.oauth2;
 
-import com.example.wellnesscoach.domain.user.dto.CustomOAuth2User;
+import com.example.wellnesscoach.dto.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
